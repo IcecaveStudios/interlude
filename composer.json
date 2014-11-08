@@ -1,0 +1,38 @@
+{
+    "name": "icecave/interlude",
+    "description": "Emulated timeouts for synchronous operations.",
+    "keywords": [
+        "timeout",
+        "retry",
+        "ttl",
+        "sync",
+        "async"
+    ],
+    "homepage": "https://github.com/IcecaveStudios/interlude",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "James Harris",
+            "email": "james.harris@icecave.com.au",
+            "homepage": "https://github.com/jmalloc"
+        }
+    ],
+    "require": {
+        "php": ">=5.3",
+        "icecave/isolator": "~3"
+    },
+    "require-dev": {
+        "eloquent/phony": "~0.1.0@dev",
+        "icecave/archer": "~1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Icecave\\Interlude\\": "src"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "0.1.x-dev"
+        }
+    }
+}
