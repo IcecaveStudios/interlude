@@ -46,7 +46,7 @@
         <h2>Details</h2>
 
                         <h3 id="method_invoke">
-        <div class="location">at line 29</div>
+        <div class="location">at line 30</div>
         <code>            public            mixed
     <strong>invoke</strong>(<abbr title="Icecave\Interlude\callable">callable</abbr> $operation, integer|<abbr title="Icecave\Interlude\float">float</abbr> $timeout = INF, integer $retries = INF, integer|<abbr title="Icecave\Interlude\float">float</abbr> $delay)</code>
     </h3>
@@ -55,8 +55,9 @@
         <p>The operation function is invoked with two parameters, the remaining
 timeout period (in seconds) and the number of retries remaining.</p>
 
-<p>The operation is considered successful if it returns without throwing an
-exception, in which case execute() returns the operation's return value.</p>
+<p>The operation is considered successful if it returns a value that fails a
+strict comparison with false (ie, $value !== false) and does not throw an
+exception.</p>
 
 <p>If the operation directly throws an exception that implements
 InterludeExceptionInterface the exception will propagate immediately,
@@ -93,7 +94,7 @@ bypassing any remaining retries.</p>
                     <table>
         <tr>
             <td>mixed</td>
-            <td>The return value of the operation if successful.</td>
+            <td>The return value of the operation.</td>
         </tr>
     </table>
 
