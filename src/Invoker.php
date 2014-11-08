@@ -36,9 +36,9 @@ class Invoker implements InvokerInterface
      * @param integer       $retries   The maximum number of retries to perform.
      * @param integer|float $delay     How long to delay between each attempt, in seconds.
      *
-     * @return mixed               The return value of the operation if successful.
+     * @return mixed                     The return value of the operation if successful.
      * @throws RetriesExhaustedException If the operation is retried the maximum number of times without success.
-     * @throws TimeoutException    If the timeout is reached before the operation is invoked successfully.
+     * @throws TimeoutException          If the timeout is reached before the operation is invoked successfully.
      */
     public function invoke(
         $operation,
