@@ -27,7 +27,7 @@ interface InvokerInterface
      * @throws TimeoutException    If the timeout is reached before the operation is invoked successfully.
      */
     public function invoke(
-        callable $operation,
+        $operation,
         $timeout = INF,
         $retries = INF,
         $delay = 0
