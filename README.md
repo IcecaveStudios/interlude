@@ -4,10 +4,39 @@
 [![Test Coverage]](https://coveralls.io/r/IcecaveStudios/interlude?branch=develop)
 [![SemVer]](http://semver.org)
 
-**Interlude** needs a description!
+**Interlude** is a small PHP library for retrying an operation until it succeeds,
+a timeout period is exhausted, or the maximum number of retries are exhausted.
+
+If you don't need the timeout feature, you might want to try [igorw/retry](https://github.com/igorw/retry).
 
 * Install via [Composer](http://getcomposer.org) package [icecave/interlude](https://packagist.org/packages/icecave/interlude)
 * Read the [API documentation](http://icecavestudios.github.io/interlude/artifacts/documentation/api/)
+
+## Example
+
+```php
+use Icecave\Interlude\Exception\RetriesExhaustedException;
+use Icecave\Interlude\Exception\TimeoutException;
+use Icecave\Interlude\Invoker;
+
+$invoker = new Invoker;
+
+$operation = function ($remainingTimeout, $remainingAttempts) {
+    // do work ...
+};
+
+try {
+    $invoker->invoke(
+        $operation,
+        10, // ten second timeout
+        3   // maximum of three attempts
+    );
+} catch (TimeoutException $e) {
+    echo 'The operation timed out!' . PHP_EOL;
+} catch (RetriesExhaustedException $e) {
+    echo 'The operation was attempted the maximum number of times!' . PHP_EOL;
+}
+```
 
 ## Contact us
 
