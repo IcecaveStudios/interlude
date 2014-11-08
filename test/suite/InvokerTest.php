@@ -13,17 +13,17 @@ class InvokerTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->isolator = Phony::mock(Isolator::class);
+        $this->isolator = Phony::mock('Icecave\Isolator\Isolator');
         $this->operation = Phony::stub();
         $this->regularException = new Exception('The operation failed!');
         $this->interludeException = Phony::mock(
-            [
-                InterludeExceptionInterface::class,
-                Exception::class
-            ],
-            [
+            array(
+                'Icecave\Interlude\Exception\InterludeExceptionInterface',
+                'Exception',
+            ),
+            array(
                 'Test exception!',
-            ]
+            )
         );
 
         $this
@@ -93,7 +93,7 @@ class InvokerTest extends PHPUnit_Framework_TestCase
             ->throws($this->interludeException->mock());
 
         $this->setExpectedException(
-            InterludeExceptionInterface::class,
+            'Icecave\Interlude\Exception\InterludeExceptionInterface',
             'Test exception!'
         );
 
@@ -109,7 +109,7 @@ class InvokerTest extends PHPUnit_Framework_TestCase
             ->throws($this->regularException);
 
         $this->setExpectedException(
-            RetriesExhaustedException::class
+            'Icecave\Interlude\Exception\RetriesExhaustedException'
         );
 
         try {
@@ -136,7 +136,7 @@ class InvokerTest extends PHPUnit_Framework_TestCase
             ->throws($this->regularException);
 
         $this->setExpectedException(
-            TimeoutException::class
+            'Icecave\Interlude\Exception\TimeoutException'
         );
 
         try {
