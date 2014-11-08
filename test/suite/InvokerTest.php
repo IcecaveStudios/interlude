@@ -66,6 +66,30 @@ class InvokerTest extends PHPUnit_Framework_TestCase
     {
         $this
             ->operation
+            ->returns(false)
+            ->returns(true);
+
+        $result = $this->invoker->invoke(
+            $this->operation,
+            100,
+            200
+        );
+
+        Phony::inOrder(
+            $this->operation->calledWith(100, 200),
+            $this->isolator->usleep->calledWith(0),
+            $this->operation->calledWith(90, 199)
+        );
+
+        $this->assertTrue(
+            $result
+        );
+    }
+
+    public function testInvokeWithOperationThatThrowsThenSucceeds()
+    {
+        $this
+            ->operation
             ->throws($this->regularException)
             ->returns(123);
 

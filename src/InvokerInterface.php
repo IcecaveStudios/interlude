@@ -10,8 +10,9 @@ interface InvokerInterface
      * The operation function is invoked with two parameters, the remaining
      * timeout period (in seconds) and the number of retries remaining.
      *
-     * The operation is considered successful if it returns without throwing an
-     * exception, in which case execute() returns the operation's return value.
+     * The operation is considered successful if it returns a value that fails a
+     * strict comparison with false (ie, $value !== false) and does not throw an
+     * exception.
      *
      * If the operation directly throws an exception that implements
      * InterludeExceptionInterface the exception will propagate immediately,
@@ -22,7 +23,7 @@ interface InvokerInterface
      * @param integer       $retries   The maximum number of retries to perform.
      * @param integer|float $delay     How long to delay between each attempt, in seconds.
      *
-     * @return mixed                     The return value of the operation if successful.
+     * @return mixed                     The return value of the operation.
      * @throws RetriesExhaustedException If the operation is retried the maximum number of times without success.
      * @throws TimeoutException          If the timeout is reached before the operation is invoked successfully.
      */
