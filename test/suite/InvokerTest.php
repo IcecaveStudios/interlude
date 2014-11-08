@@ -35,8 +35,9 @@ class InvokerTest extends PHPUnit_Framework_TestCase
             ->returns(30.0)
             ->returns(40.0);
 
-        $this->invoker = new Invoker;
-        $this->invoker->setIsolator($this->isolator->mock());
+        $this->invoker = new Invoker(
+            $this->isolator->mock()
+        );
     }
 
     public function testInvokeWithOperationThatSucceeds()

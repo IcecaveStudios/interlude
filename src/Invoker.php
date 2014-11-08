@@ -2,14 +2,20 @@
 namespace Icecave\Interlude;
 
 use Exception;
-use Icecave\Isolator\IsolatorTrait;
+use Icecave\Isolator\Isolator;
 use Icecave\Interlude\Exception\InterludeExceptionInterface;
 use Icecave\Interlude\Exception\RetriesExhaustedException;
 use Icecave\Interlude\Exception\TimeoutException;
 
 class Invoker implements InvokerInterface
 {
-    use IsolatorTrait;
+    /**
+     * @param Isolator|null $isolator
+     */
+    public function __construct(Isolator $isolator = null)
+    {
+        $this->isolator = Isolator::get($isolator);
+    }
 
     /**
      * Repeat an operation until it succeeds, times-out or too many attempts are
@@ -40,8 +46,7 @@ class Invoker implements InvokerInterface
         $retries = INF,
         $delay = 0
     ) {
-        $iso       = $this->isolator();
-        $start     = $iso->microtime(true);
+        $start     = $this->isolator->microtime(true);
         $remaining = $timeout;
         $delay    *= 1000000; // convert seconds to micros for usleep()
 
@@ -59,13 +64,15 @@ class Invoker implements InvokerInterface
             throw new RetriesExhaustedException($e);
         }
 
-        $remaining = $timeout - ($iso->microtime() - $start);
+        $remaining = $timeout - ($this->isolator->microtime() - $start);
 
         if ($remaining <= 0) {
             throw new TimeoutException($e);
         }
 
-        $iso->usleep($delay);
+        $this->isolator->usleep($delay);
         goto retry;
     }
+
+    private $isolator;
 }
