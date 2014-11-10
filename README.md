@@ -48,4 +48,4 @@ try {
 <!-- references -->
 [Build Status]: http://img.shields.io/travis/IcecaveStudios/interlude/develop.svg?style=flat-square
 [Test Coverage]: http://img.shields.io/coveralls/IcecaveStudios/interlude/develop.svg?style=flat-square
-[SemVer]: http://img.shields.io/:semver-0.0.0-red.svg?style=flat-square
+[SemVer]: http://img.shields.io/:semver-0.1.0-yellow.svg?style=flat-square
