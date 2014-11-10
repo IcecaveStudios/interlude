@@ -4,6 +4,7 @@
     "keywords": [
         "timeout",
         "retry",
+        "repeat",
         "ttl",
         "sync",
         "async"
