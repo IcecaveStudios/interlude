@@ -18,11 +18,11 @@ class InvokerTest extends PHPUnit_Framework_TestCase
         $this
             ->isolator
             ->microtime
-            ->with(true)
-            ->returns(10.0)
-            ->returns(20.0)
-            ->returns(30.0)
-            ->returns(40.0);
+            ->with($this->identicalTo(true)) // Temporary hax.
+            ->returns(10010.0)
+            ->returns(10020.0)
+            ->returns(10030.0)
+            ->returns(10040.0);
 
         $this->invoker = new Invoker(
             $this->isolator->mock()

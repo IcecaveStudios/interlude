@@ -70,7 +70,7 @@ class Invoker implements InvokerInterface
         }
 
         // Calculate the timeout remaining ...
-        $remaining = $timeout - ($this->isolator->microtime() - $start);
+        $remaining = $timeout - ($this->isolator->microtime(true) - $start);
 
         // The timeout period has been reached ...
         if ($remaining <= 0) {
