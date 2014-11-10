@@ -3,8 +3,7 @@ namespace Icecave\Interlude;
 
 use Eloquent\Phony\Phpunit\Phony;
 use Exception;
-use Icecave\Interlude\Exception\InterludeExceptionInterface;
-use Icecave\Interlude\Exception\RetriesExhaustedException;
+use Icecave\Interlude\Exception\AttemptsExhaustedException;
 use Icecave\Interlude\Exception\TimeoutException;
 use Icecave\Isolator\Isolator;
 use PHPUnit_Framework_TestCase;
@@ -13,18 +12,8 @@ class InvokerTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->isolator = Phony::mock('Icecave\Isolator\Isolator');
+        $this->isolator = Phony::fullMock('Icecave\Isolator\Isolator');
         $this->operation = Phony::stub();
-        $this->regularException = new Exception('The operation failed!');
-        $this->interludeException = Phony::mock(
-            array(
-                'Icecave\Interlude\Exception\InterludeExceptionInterface',
-                'Exception',
-            ),
-            array(
-                'Test exception!',
-            )
-        );
 
         $this
             ->isolator
@@ -67,30 +56,6 @@ class InvokerTest extends PHPUnit_Framework_TestCase
         $this
             ->operation
             ->returns(false)
-            ->returns(true);
-
-        $result = $this->invoker->invoke(
-            $this->operation,
-            100,
-            200
-        );
-
-        Phony::inOrder(
-            $this->operation->calledWith(100, 200),
-            $this->isolator->usleep->calledWith(0),
-            $this->operation->calledWith(90, 199)
-        );
-
-        $this->assertTrue(
-            $result
-        );
-    }
-
-    public function testInvokeWithOperationThatThrowsThenSucceeds()
-    {
-        $this
-            ->operation
-            ->throws($this->regularException)
             ->returns(123);
 
         $result = $this->invoker->invoke(
@@ -101,7 +66,6 @@ class InvokerTest extends PHPUnit_Framework_TestCase
 
         Phony::inOrder(
             $this->operation->calledWith(100, 200),
-            $this->isolator->usleep->calledWith(0),
             $this->operation->calledWith(90, 199)
         );
 
@@ -111,14 +75,16 @@ class InvokerTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function testInvokeWithOperationThatThrowsInterludeException()
+    public function testInvokeWithOperationThatThrows()
     {
+        $exception = new Exception('Test exception!');
+
         $this
             ->operation
-            ->throws($this->interludeException->mock());
+            ->throws($exception);
 
         $this->setExpectedException(
-            'Icecave\Interlude\Exception\InterludeExceptionInterface',
+            'Exception',
             'Test exception!'
         );
 
@@ -127,38 +93,11 @@ class InvokerTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function testInvokeWithOperationThatFailsDueToExhaustedRetryAttempts()
-    {
-        $this
-            ->operation
-            ->throws($this->regularException);
-
-        $this->setExpectedException(
-            'Icecave\Interlude\Exception\RetriesExhaustedException'
-        );
-
-        try {
-            $this->invoker->invoke(
-                $this->operation,
-                INF,
-                3
-            );
-        } catch (Exception $e) {
-            Phony::inOrder(
-                $this->operation->calledWith(INF, 3),
-                $this->operation->calledWith(INF, 2),
-                $this->operation->calledWith(INF, 1)
-            );
-
-            throw $e;
-        }
-    }
-
     public function testInvokeWithOperationThatFailsDueToTimeout()
     {
         $this
             ->operation
-            ->throws($this->regularException);
+            ->returns(false);
 
         $this->setExpectedException(
             'Icecave\Interlude\Exception\TimeoutException'
@@ -179,4 +118,125 @@ class InvokerTest extends PHPUnit_Framework_TestCase
             throw $e;
         }
     }
+
+    public function testInvokeWithZeroTimeout()
+    {
+        $this
+            ->operation
+            ->returns(false);
+
+        $this->setExpectedException(
+            'Icecave\Interlude\Exception\TimeoutException'
+        );
+
+        try {
+            $this->invoker->invoke(
+                $this->operation,
+                25
+            );
+        } catch (Exception $e) {
+            $this->operation->calledWith(25, INF);
+
+            throw $e;
+        }
+    }
+
+    public function testInvokeWithInvalidTimeout()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Timeout must be zero or greater.'
+        );
+
+        $this->invoker->invoke(
+            $this->operation,
+            -1.0
+        );
+    }
+
+    public function testInvokeWithOperationThatFailsDueToExhaustedAttempts()
+    {
+        $this
+            ->operation
+            ->returns(false);
+
+        $this->setExpectedException(
+            'Icecave\Interlude\Exception\AttemptsExhaustedException'
+        );
+
+        try {
+            $this->invoker->invoke(
+                $this->operation,
+                INF,
+                3
+            );
+        } catch (Exception $e) {
+            Phony::inOrder(
+                $this->operation->calledWith(INF, 3),
+                $this->operation->calledWith(INF, 2),
+                $this->operation->calledWith(INF, 1)
+            );
+
+            throw $e;
+        }
+    }
+
+    public function testInvokeWithInvalidAttempts()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Attempts must be one or greater.'
+        );
+
+        $this->invoker->invoke(
+            $this->operation,
+            INF,
+            0
+        );
+    }
+
+    public function testInvokeWithNonZeroDelay()
+    {
+        $this
+            ->operation
+            ->returns(false)
+            ->returns(false)
+            ->returns(123);
+
+        $result = $this->invoker->invoke(
+            $this->operation,
+            INF,
+            INF,
+            0.5
+        );
+
+        Phony::inOrder(
+            $this->operation->calledWith(INF, INF),
+            $this->isolator->usleep->calledWith(500000),
+            $this->operation->calledWith(INF, INF),
+            $this->isolator->usleep->calledWith(500000),
+            $this->operation->calledWith(INF, INF)
+        );
+
+        $this->assertSame(
+            123,
+            $result
+        );
+    }
+
+    public function testInvokeWithInvalidDelay()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Delay must be zero or greater.'
+        );
+
+        $this->invoker->invoke(
+            $this->operation,
+            INF,
+            INF,
+            -0.1
+        );
+    }
+
 }

@@ -4,8 +4,9 @@
 [![Test Coverage]](https://coveralls.io/r/IcecaveStudios/interlude?branch=develop)
 [![SemVer]](http://semver.org)
 
-**Interlude** is a small PHP library for retrying an operation until it succeeds,
-a timeout period is exhausted, or the maximum number of retries are exhausted.
+**Interlude** is a small PHP library for repeating a non-blocking operation
+until it succeeds, a timeout period is reached, or a maximum number of
+attempts have been performed.
 
 If you don't need the timeout feature, you might want to try [igorw/retry](https://github.com/igorw/retry).
 
@@ -15,7 +16,7 @@ If you don't need the timeout feature, you might want to try [igorw/retry](https
 ## Example
 
 ```php
-use Icecave\Interlude\Exception\RetriesExhaustedException;
+use Icecave\Interlude\Exception\AttemptsExhaustedException;
 use Icecave\Interlude\Exception\TimeoutException;
 use Icecave\Interlude\Invoker;
 
@@ -33,7 +34,7 @@ try {
     );
 } catch (TimeoutException $e) {
     echo 'The operation timed out!' . PHP_EOL;
-} catch (RetriesExhaustedException $e) {
+} catch (AttemptsExhaustedException $e) {
     echo 'The operation was attempted the maximum number of times!' . PHP_EOL;
 }
 ```
