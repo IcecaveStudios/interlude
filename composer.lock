@@ -131,12 +131,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/eloquent/phony.git",
-                "reference": "658d159790f50548919e86398877974d1d8d648f"
+                "reference": "55c6679e5617249e1984d73012985b6d2cc4b69b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/eloquent/phony/zipball/658d159790f50548919e86398877974d1d8d648f",
-                "reference": "658d159790f50548919e86398877974d1d8d648f",
+                "url": "https://api.github.com/repos/eloquent/phony/zipball/55c6679e5617249e1984d73012985b6d2cc4b69b",
+                "reference": "55c6679e5617249e1984d73012985b6d2cc4b69b",
                 "shasum": ""
             },
             "require": {
@@ -195,7 +195,7 @@
                 "stubbing",
                 "test"
             ],
-            "time": "2014-11-09 11:52:53"
+            "time": "2014-11-10 12:23:02"
         },
         {
             "name": "guzzle/guzzle",
