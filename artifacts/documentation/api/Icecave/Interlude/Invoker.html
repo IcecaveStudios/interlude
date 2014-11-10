@@ -47,8 +47,8 @@
                     mixed
                 </td>
                 <td class="last">
-                    <a href="#method_invoke">invoke</a>(<abbr title="Icecave\Interlude\callable">callable</abbr> $operation, integer|<abbr title="Icecave\Interlude\float">float</abbr> $timeout = INF, integer $retries = INF, integer|<abbr title="Icecave\Interlude\float">float</abbr> $delay)
-                    <p>Repeat an operation until it succeeds, times-out or too many attempts are performed.</p>
+                    <a href="#method_invoke">invoke</a>(<abbr title="Icecave\Interlude\callable">callable</abbr> $operation, integer|<abbr title="Icecave\Interlude\float">float</abbr> $timeout = INF, integer $attempts = INF, integer|<abbr title="Icecave\Interlude\float">float</abbr> $delay)
+                    <p>Repeat non-blocking operation until it succeeds, a timeout period is reached, or the maximum number of attempts have been performed.</p>
                 </td>
                 <td></td>
             </tr>
@@ -86,22 +86,18 @@
     </div>
 
                 <h3 id="method_invoke">
-        <div class="location">at line 44</div>
+        <div class="location">at line 40</div>
         <code>            public            mixed
-    <strong>invoke</strong>(<abbr title="Icecave\Interlude\callable">callable</abbr> $operation, integer|<abbr title="Icecave\Interlude\float">float</abbr> $timeout = INF, integer $retries = INF, integer|<abbr title="Icecave\Interlude\float">float</abbr> $delay)</code>
+    <strong>invoke</strong>(<abbr title="Icecave\Interlude\callable">callable</abbr> $operation, integer|<abbr title="Icecave\Interlude\float">float</abbr> $timeout = INF, integer $attempts = INF, integer|<abbr title="Icecave\Interlude\float">float</abbr> $delay)</code>
     </h3>
     <div class="details">
-        <p>Repeat an operation until it succeeds, times-out or too many attempts are performed.</p>
+        <p>Repeat non-blocking operation until it succeeds, a timeout period is reached, or the maximum number of attempts have been performed.</p>
         <p>The operation function is invoked with two parameters, the remaining
-timeout period (in seconds) and the number of retries remaining.</p>
+timeout period (in seconds) and the remaining number of attempts,
+including this one.</p>
 
 <p>The operation is considered successful if it returns a value that fails a
-strict comparison with false (ie, $value !== false) and does not throw an
-exception.</p>
-
-<p>If the operation directly throws an exception that implements
-InterludeExceptionInterface the exception will propagate immediately,
-bypassing any remaining retries.</p>
+strict comparison with false (ie, $value !== false).</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
@@ -118,8 +114,8 @@ bypassing any remaining retries.</p>
             </tr>
                     <tr>
                 <td>integer</td>
-                <td>$retries</td>
-                <td>The maximum number of retries to perform.</td>
+                <td>$attempts</td>
+                <td>The maximum number of attempts to perform.</td>
             </tr>
                     <tr>
                 <td>integer|<abbr title="Icecave\Interlude\float">float</abbr></td>
@@ -143,8 +139,8 @@ bypassing any remaining retries.</p>
 
                     <table>
                     <tr>
-                <td><abbr title="RetriesExhaustedException">RetriesExhaustedException</abbr></td>
-                <td>If the operation is retried the maximum number of times without success.</td>
+                <td><abbr title="AttemptsExhaustedException">AttemptsExhaustedException</abbr></td>
+                <td>If the operation is attempted the maximum number of times without success.</td>
             </tr>
                     <tr>
                 <td><abbr title="TimeoutException">TimeoutException</abbr></td>
